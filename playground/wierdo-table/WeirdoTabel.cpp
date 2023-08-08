@@ -1,4 +1,3 @@
-#include <optional>
 #include "WeirdoTable.h"
 
 size_t WeirdoTable::hash(const std::string &key) const
@@ -25,7 +24,7 @@ size_t WeirdoTable::insert(const std::string &key, int value)
     return index;
 }
 
-Node &WeirdoTable::operator[](const std::string &key)
+int &WeirdoTable::operator[](const std::string &key)
 {
     size_t index{hash(key)};
 
@@ -34,10 +33,10 @@ Node &WeirdoTable::operator[](const std::string &key)
         Node &candidate{table[(index + i) % TABLE_LENGTH]};
 
         if (candidate.key == key)
-            return candidate;
+            return candidate.value;
     }
 
     index = insert(key, 0);
 
-    return table[index];
+    return table[index].value;
 }
