@@ -2,9 +2,10 @@
 
 #include <string>
 #include <array>
+#include <exception>
 
 #define TABLE_LENGTH 26
-#define MAX_KEY_LENGTH 10
+#define CHECK_KEY(key) (key <= 10)
 
 template <typename _Val>
 class WeirdoTable
@@ -38,6 +39,9 @@ private:
 template <typename _Val>
 size_t WeirdoTable<_Val>::hash(const std::string &key) const
 {
+    if (!CHECK_KEY(key.size()))
+        throw std::invalid_argument("maximum key length is 10.");
+
     return static_cast<int>(key[key.size() - 1]) - 97;
 }
 
@@ -50,9 +54,7 @@ size_t WeirdoTable<_Val>::insert(const std::string &key, _Val value)
 
     for (size_t i{0}; i < TABLE_LENGTH; ++i)
     {
-        index = (index + i) % TABLE_LENGTH;
-
-        Node &candidate{table[index]};
+        Node &candidate{table[(index + i) % TABLE_LENGTH]};
 
         if (candidate.status == Status::Available)
         {
