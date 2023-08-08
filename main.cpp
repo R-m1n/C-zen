@@ -5,7 +5,7 @@
 
 int main()
 {
-    WeirdoTable wt;
+    WeirdoTable<int> wt;
 
     wt.insert("armin", 25);
     wt.insert("arian", 19);

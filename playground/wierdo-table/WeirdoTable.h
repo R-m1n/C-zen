@@ -6,12 +6,13 @@
 #define TABLE_LENGTH 26
 #define MAX_KEY_LENGTH 10
 
+template <typename _Val>
 class WeirdoTable
 {
 public:
     size_t hash(const std::string &key) const;
-    size_t insert(const std::string &key, int value);
-    int &operator[](const std::string &key);
+    size_t insert(const std::string &key, _Val value);
+    _Val &operator[](const std::string &key);
 
 private:
     enum class Status
@@ -24,22 +25,24 @@ private:
     struct Node
     {
         std::string key;
-        int value;
+        _Val value;
         Status status;
 
-        Node() : key{""}, value{0}, status{Status::Available} {}
-        Node(const std::string &key, int value, Status status) : key{key}, value{value}, status{status} {}
+        Node() : key{""}, status{Status::Available} {}
+        Node(const std::string &key, _Val value, Status status) : key{key}, value{value}, status{status} {}
     };
 
     std::array<Node, TABLE_LENGTH> table;
 };
 
-size_t WeirdoTable::hash(const std::string &key) const
+template <typename _Val>
+size_t WeirdoTable<_Val>::hash(const std::string &key) const
 {
     return static_cast<int>(key[key.size() - 1]) - 97;
 }
 
-size_t WeirdoTable::insert(const std::string &key, int value)
+template <typename _Val>
+size_t WeirdoTable<_Val>::insert(const std::string &key, _Val value)
 {
     size_t index{hash(key)};
 
@@ -61,7 +64,8 @@ size_t WeirdoTable::insert(const std::string &key, int value)
     return index;
 }
 
-int &WeirdoTable::operator[](const std::string &key)
+template <typename _Val>
+_Val &WeirdoTable<_Val>::operator[](const std::string &key)
 {
     size_t index{hash(key)};
 
