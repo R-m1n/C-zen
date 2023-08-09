@@ -2,8 +2,6 @@
 
 #include <string>
 #include <array>
-#include <exception>
-
 #define TABLE_LENGTH 26
 #define CHECK_KEY(key_size) (key_size <= 10)
 
@@ -15,22 +13,59 @@ enum class Status
 };
 
 template <typename _Table>
-class WeirdoIterator
+class TableIterator
 {
 public:
     using node_type = typename _Table::node_type;
-    using Iterator = typename _Table::Iterator;
+    TableIterator(node_type *ptr) : ptr{ptr} {}
 
-    WeirdoIterator(node_type *ptr) : ptr{ptr} {}
-
-    Iterator &operator+=(size_t position)
+    TableIterator &operator++()
     {
-        return this;
+        do
+            ++ptr;
+
+        while (ptr->key == "");
+
+        return *this;
+    }
+
+    TableIterator operator++(int)
+    {
+        node_type *temp = ptr;
+
+        ++(*this);
+
+        return TableIterator(temp);
+    }
+
+    node_type &operator[](size_t index)
+    {
+        ptr += index;
+
+        if (ptr->key == "")
+            ++(*this);
+
+        return *ptr;
     }
 
     node_type &operator*()
     {
         return *ptr;
+    }
+
+    node_type *operator->()
+    {
+        return ptr;
+    }
+
+    bool operator==(const TableIterator &other)
+    {
+        return ptr == other.ptr;
+    }
+
+    bool operator!=(const TableIterator &other)
+    {
+        return !(*this == other);
     }
 
 private:
@@ -56,9 +91,10 @@ class WeirdoTable
 public:
     using value_type = T;
     using node_type = Node<T>;
-    using Iterator = WeirdoIterator<WeirdoTable<T>>;
+    using Iterator = TableIterator<WeirdoTable<T>>;
 
     bool insert(const std::string &key, const T &value);
+    bool erase(const std::string &key);
     T &operator[](const std::string &key);
 
     Iterator begin()
@@ -72,11 +108,7 @@ public:
 
     Iterator end()
     {
-        for (size_t i = table.size() - 1; i >= 0; --i)
-            if (table[i].status == Status::Occupied)
-                return Iterator(&(table[i]));
-
-        return Iterator(&(table[table.size() - 1]));
+        return Iterator(&(table[table.size() - 1]) + 1);
     }
 
 private:
@@ -99,6 +131,25 @@ bool WeirdoTable<T>::insert(const std::string &key, const T &value)
         if (candidate.status == Status::Available)
         {
             candidate = std::move(node);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+template <typename T>
+bool WeirdoTable<T>::erase(const std::string &key)
+{
+    size_t index{hash(key)};
+
+    for (size_t i{0}; i < TABLE_LENGTH; ++i)
+    {
+        Node<T> &candidate{table[(index + i) % TABLE_LENGTH]};
+
+        if (candidate.key == key)
+        {
+            candidate.status = Status::Tombstone;
             return true;
         }
     }

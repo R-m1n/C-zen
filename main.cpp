@@ -10,23 +10,18 @@ int main()
 
     wt.insert("armin", 25);
     wt.insert("arian", 19);
-    wt.insert("kiana", 23);
+    wt.insert("kianai", 23);
 
-    auto ptr = wt.end();
-
-    std::cout << (*ptr).value;
+    for (auto &[key, value, status] : wt)
+    {
+        std::cout << key << ": " << value << '\n';
+    }
 
     // std::unordered_map<std::string, int> map;
 
     // map["armin"] = 25;
     // map["arian"] = 19;
     // map["kiana"] = 23;
-
-    // for (auto i : map)
-    // {
-    //     std::cout << i.first;
-    //     std::cout << i.second;
-    // }
 
     return 0;
 }
