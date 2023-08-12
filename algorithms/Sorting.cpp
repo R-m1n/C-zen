@@ -3,19 +3,19 @@
 
 void ocd::insertion(std::vector<int> &vec)
 {
-    for (int i = 0; i < vec.size(); ++i)
+    for (int curr_index = 0; curr_index < vec.size(); ++curr_index)
     {
-        int current = vec[i];
+        int current = vec[curr_index];
 
-        for (int j = i - 1; j >= 0; --j)
+        int prev_index = curr_index - 1;
+
+        while ((current < vec[prev_index]))
         {
-            if (current < vec[j])
-                vec[j + 1] = vec[j];
+            vec[prev_index + 1] = vec[prev_index];
 
-            else
-                break;
-
-            vec[j] = current;
+            --prev_index;
         }
+
+        vec[prev_index + 1] = current;
     }
 }
