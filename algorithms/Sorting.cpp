@@ -1,6 +1,10 @@
 #include <vector>
 #include "Sorting.h"
 
+void ocd::selection(std::vector<int> &vec)
+{
+}
+
 void ocd::insertion(std::vector<int> &vec)
 {
     for (int curr_index = 0; curr_index < vec.size(); ++curr_index)
