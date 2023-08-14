@@ -7,60 +7,42 @@
 #include "algorithms/Sorting.h"
 #include "utility/Timer.h"
 
-void ocd::selection(std::vector<int> &vec)
+void ocd::bubble(std::vector<int> &vec)
 {
-    for (int i = 0; i < vec.size(); ++i)
-        std::swap(vec[i], vec[ocd::min_index(vec, i)]);
-}
+    if (!vec.size())
+        return;
 
-int ocd::min_index(const std::vector<int> &vec, int start)
-{
-    int min = vec[start];
-    int index = start;
+    bool is_sorted{false};
 
-    for (int i = start + 1; i < vec.size(); ++i)
-        if (vec[i] < min)
-        {
-            min = vec[i];
-            index = i;
-        }
+    size_t sorted_items{0};
 
-    return index;
-}
-
-void ocd::insertion(std::vector<int> &vec)
-{
-    util::Timer time;
-    for (int curr_index = 0; curr_index < vec.size(); ++curr_index)
+    while (!is_sorted)
     {
-        int current = vec[curr_index];
+        is_sorted = true;
 
-        int prev_index = curr_index - 1;
+        for (int i = 0; i < vec.size() - sorted_items - 1; ++i)
+            if (vec[i + 1] < vec[i])
+            {
+                std::swap(vec[i], vec[i + 1]);
+                is_sorted = false;
+            }
 
-        while ((current < vec[prev_index]))
-        {
-            vec[prev_index + 1] = vec[prev_index];
-
-            --prev_index;
-        }
-
-        vec[prev_index + 1] = current;
+        ++sorted_items;
     }
 }
 
 int main()
 {
-    std::vector<int> vec{1, 2, 4, 10, 7, 5, 6};
+    std::vector<int> vec{10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+    std::vector<int> vec1{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    std::vector<int> vec2{8, 2, 5, 1, 9, 10, 4, 3, 6, 7};
 
-    ocd::insertion(vec);
+    ocd::bubble(vec);
 
-    // for (auto i : vec)
-    // {
-    //     std::cout << i << '\n';
-    // }
-
-    // for (int i = 0; i < vec.size(); ++i)
-    //     std::cout << ocd::min(vec, i) << '\n';
+    for (auto i : vec)
+    {
+        std::cout << i << '\n';
+    }
 
     return 0;
 }
