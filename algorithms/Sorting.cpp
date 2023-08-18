@@ -57,3 +57,64 @@ void ocd::insertion(std::vector<int> &vec)
         vec[prev_index + 1] = current;
     }
 }
+
+void ocd::merge(std::vector<int> &vec)
+{
+    const size_t vec_size{vec.size()};
+
+    if (vec_size == 1 || vec_size == 0)
+        return;
+
+    const size_t boundry{vec_size / 2};
+
+    std::vector<int> left;
+    left.reserve(boundry);
+    for (int i = 0; i < boundry; ++i)
+        left.emplace_back(vec[i]);
+
+    std::vector<int> right;
+    right.reserve(vec_size - boundry);
+    for (int i = boundry; i < vec_size; ++i)
+        right.emplace_back(vec[i]);
+
+    merge(left);
+    merge(right);
+
+    std::vector<int> sorted;
+    sorted.reserve(left.size() + right.size());
+
+    std::vector<int>::iterator left_iter{left.begin()}, right_iter{right.begin()};
+
+    while (!(left_iter == left.end() && right_iter == right.end()))
+    {
+
+        if (left_iter == left.end())
+        {
+            sorted.emplace_back(*right_iter);
+            ++right_iter;
+
+            continue;
+        }
+
+        if (right_iter == right.end())
+        {
+            sorted.emplace_back(*left_iter);
+            ++left_iter;
+
+            continue;
+        }
+
+        if (*left_iter < *right_iter)
+        {
+            sorted.emplace_back(*left_iter);
+            ++left_iter;
+
+            continue;
+        }
+
+        sorted.emplace_back(*right_iter);
+        ++right_iter;
+    }
+
+    vec = std::move(sorted);
+}
