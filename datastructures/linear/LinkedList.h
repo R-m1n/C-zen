@@ -1,16 +1,14 @@
 #pragma once
 #include <iostream>
+#include "../Error.h"
 
 namespace cantor
 {
+    template <typename T>
     class LinkedList
     {
     public:
-        enum class Error : int
-        {
-            Success,
-            Failure
-        };
+        using value_type = T;
 
         LinkedList() : front{new Node()}, back{new Node()}, count{0} {};
 
@@ -24,135 +22,24 @@ namespace cantor
             count = 0;
         }
 
-        Error push_back(int data)
-        {
-            if (!count)
-            {
-                list_init(data);
+        Error push_back(T data);
 
-                return Error::Success;
-            }
+        Error push_front(T data);
 
-            Node *node{new Node()};
+        Error insert(T data, size_t index);
 
-            node->prev = back;
-            node->data = data;
-            back->next = node;
+        Error remove_back();
 
-            back = node;
+        Error remove_front();
 
-            ++count;
-            return Error::Success;
-        }
-
-        Error push_front(int data)
-        {
-            if (!count)
-            {
-                list_init(data);
-
-                return Error::Success;
-            }
-
-            Node *node{new Node()};
-
-            node->next = front;
-            node->data = data;
-            front->prev = node;
-
-            front = node;
-
-            ++count;
-            return Error::Success;
-        }
-
-        Error insert(int data, size_t index)
-        {
-            if (count <= index)
-                return Error::Failure;
-
-            Node *temp{get(index)};
-
-            Node *node{new Node()};
-
-            node->data = data;
-            node->next = temp;
-            node->prev = temp->prev;
-
-            (temp->prev)->next = node;
-            temp->prev = node;
-
-            ++count;
-            return Error::Success;
-        }
-
-        Error remove_back()
-        {
-            if (!count)
-                return Error::Failure;
-
-            Node *temp{back->prev};
-
-            delete back;
-
-            back = temp;
-
-            --count;
-
-            return Error::Success;
-        }
-
-        Error remove_front()
-        {
-            if (!count)
-                return Error::Failure;
-
-            Node *temp{front->next};
-
-            delete front;
-
-            front = temp;
-
-            --count;
-
-            return Error::Success;
-        }
-
-        Error remove(size_t index)
-        {
-            if (!count || count <= index)
-                return Error::Failure;
-
-            if (index == 0)
-            {
-                remove_front();
-                return Error::Success;
-            }
-
-            if (index == count - 1)
-            {
-                remove_back();
-                return Error::Success;
-            }
-
-            Node *node{get(index)};
-            (node->prev)->next = node->next;
-            (node->next)->prev = node->prev;
-
-            delete node;
-            node = nullptr;
-
-            --count;
-
-            return Error::Success;
-        }
+        Error remove(size_t index);
 
         size_t size() const
         {
             return count;
         }
 
-        int &operator[](size_t index) const
+        T &operator[](size_t index) const
         {
             return get(index)->data;
         }
@@ -160,14 +47,14 @@ namespace cantor
     private:
         struct Node
         {
-            int data;
+            T data;
             Node *next;
             Node *prev;
 
             Node() : data{0}, next{nullptr}, prev{nullptr} {}
         };
 
-        void list_init(int data)
+        void list_init(T data)
         {
             front->data = data;
             back = front;
@@ -175,11 +62,11 @@ namespace cantor
             ++count;
         }
 
-        Node *get(int index) const
+        Node *get(size_t index) const
         {
             Node *node{front};
 
-            for (int i = 0; i < index; ++i)
+            for (size_t i = 0; i < index; ++i)
                 node = node->next;
 
             return node;
@@ -191,10 +78,145 @@ namespace cantor
         size_t count;
     };
 
-    std::ostream &operator<<(std::ostream &os, const LinkedList &list)
+    template <typename T>
+    Error LinkedList<T>::push_back(T data)
+    {
+        if (!count)
+        {
+            list_init(data);
+
+            return Ok;
+        }
+
+        Node *node{new Node()};
+
+        node->prev = back;
+        node->data = data;
+        back->next = node;
+
+        back = node;
+
+        ++count;
+
+        return Ok;
+    }
+
+    template <typename T>
+    Error LinkedList<T>::push_front(T data)
+    {
+        if (!count)
+        {
+            list_init(data);
+
+            return Ok;
+        }
+
+        Node *node{new Node()};
+
+        node->next = front;
+        node->data = data;
+        front->prev = node;
+
+        front = node;
+
+        ++count;
+        return Ok;
+    }
+
+    template <typename T>
+    Error LinkedList<T>::insert(T data, size_t index)
+    {
+        if (count <= index || index < 0)
+            return IndexOutOfRange;
+
+        Node *temp{get(index)};
+
+        Node *node{new Node()};
+
+        node->data = data;
+        node->next = temp;
+        node->prev = temp->prev;
+
+        (temp->prev)->next = node;
+        temp->prev = node;
+
+        ++count;
+
+        return Ok;
+    }
+
+    template <typename T>
+    Error LinkedList<T>::remove_back()
+    {
+        if (!count)
+            return EmptyContainer;
+
+        Node *temp{back->prev};
+
+        delete back;
+
+        back = temp;
+
+        --count;
+
+        return Ok;
+    }
+
+    template <typename T>
+    Error LinkedList<T>::remove_front()
+    {
+        if (!count)
+            return EmptyContainer;
+
+        Node *temp{front->next};
+
+        delete front;
+
+        front = temp;
+
+        --count;
+
+        return Ok;
+    }
+
+    template <typename T>
+    Error LinkedList<T>::remove(size_t index)
+    {
+        if (!count)
+            return EmptyContainer;
+
+        if (count <= index || index < 0)
+            return IndexOutOfRange;
+
+        if (index == 0)
+        {
+            remove_front();
+            return Ok;
+        }
+
+        if (index == count - 1)
+        {
+            remove_back();
+            return Ok;
+        }
+
+        Node *node{get(index)};
+        (node->prev)->next = node->next;
+        (node->next)->prev = node->prev;
+
+        delete node;
+        node = nullptr;
+
+        --count;
+
+        return Ok;
+    }
+
+    template <typename T>
+    std::ostream &operator<<(std::ostream &os, const LinkedList<T> &list)
     {
         os << '[';
-        for (int i = 0; i < list.size(); i++)
+        for (size_t i = 0; i < list.size(); i++)
         {
             os << list[i] << ", ";
         }

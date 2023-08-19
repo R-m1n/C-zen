@@ -60,7 +60,7 @@ int main()
     // std::vector<int> vec{8, 2, 10, 1, 9, 5, 4, 3, 6, 7};
     // std::vector<int> vec{5, 2, 8, 6, 3, 6, 9, 5};
 
-    cantor::LinkedList list;
+    cantor::LinkedList<int> list;
     list.push_back(8);
     list.push_back(2);
     list.push_back(10);
@@ -71,7 +71,7 @@ int main()
 
     std::cout << list;
 
-    list.remove(5);
+    list.remove(3);
 
     std::cout << list;
 
