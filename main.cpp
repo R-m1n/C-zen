@@ -71,5 +71,9 @@ int main()
 
     std::cout << list;
 
+    list.remove(5);
+
+    std::cout << list;
+
     return 0;
 }

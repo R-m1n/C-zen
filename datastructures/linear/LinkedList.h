@@ -6,6 +6,12 @@ namespace cantor
     class LinkedList
     {
     public:
+        enum class Error : int
+        {
+            Success,
+            Failure
+        };
+
         LinkedList() : front{new Node()}, back{new Node()}, count{0} {};
 
         ~LinkedList()
@@ -18,13 +24,13 @@ namespace cantor
             count = 0;
         }
 
-        void push_back(int data)
+        Error push_back(int data)
         {
             if (!count)
             {
                 list_init(data);
 
-                return;
+                return Error::Success;
             }
 
             Node *node{new Node()};
@@ -36,15 +42,16 @@ namespace cantor
             back = node;
 
             ++count;
+            return Error::Success;
         }
 
-        void push_front(int data)
+        Error push_front(int data)
         {
             if (!count)
             {
                 list_init(data);
 
-                return;
+                return Error::Success;
             }
 
             Node *node{new Node()};
@@ -56,19 +63,18 @@ namespace cantor
             front = node;
 
             ++count;
+            return Error::Success;
         }
 
-        bool insert(int data, size_t index)
+        Error insert(int data, size_t index)
         {
-            if (count < index)
-                return false;
+            if (count <= index)
+                return Error::Failure;
 
-            Node *temp{front};
-
-            for (int i{0}; i < index; ++i)
-                temp = temp->next;
+            Node *temp{get(index)};
 
             Node *node{new Node()};
+
             node->data = data;
             node->next = temp;
             node->prev = temp->prev;
@@ -77,22 +83,78 @@ namespace cantor
             temp->prev = node;
 
             ++count;
-            return true;
+            return Error::Success;
         }
 
-        int get(int index) const
+        Error remove_back()
         {
-            Node node = *front;
+            if (!count)
+                return Error::Failure;
 
-            for (int i = 0; i < index; ++i)
-                node = *(node.next);
+            Node *temp{back->prev};
 
-            return node.data;
+            delete back;
+
+            back = temp;
+
+            --count;
+
+            return Error::Success;
+        }
+
+        Error remove_front()
+        {
+            if (!count)
+                return Error::Failure;
+
+            Node *temp{front->next};
+
+            delete front;
+
+            front = temp;
+
+            --count;
+
+            return Error::Success;
+        }
+
+        Error remove(size_t index)
+        {
+            if (!count || count <= index)
+                return Error::Failure;
+
+            if (index == 0)
+            {
+                remove_front();
+                return Error::Success;
+            }
+
+            if (index == count - 1)
+            {
+                remove_back();
+                return Error::Success;
+            }
+
+            Node *node{get(index)};
+            (node->prev)->next = node->next;
+            (node->next)->prev = node->prev;
+
+            delete node;
+            node = nullptr;
+
+            --count;
+
+            return Error::Success;
         }
 
         size_t size() const
         {
             return count;
+        }
+
+        int &operator[](size_t index) const
+        {
+            return get(index)->data;
         }
 
     private:
@@ -113,6 +175,16 @@ namespace cantor
             ++count;
         }
 
+        Node *get(int index) const
+        {
+            Node *node{front};
+
+            for (int i = 0; i < index; ++i)
+                node = node->next;
+
+            return node;
+        }
+
         Node *front;
         Node *back;
 
@@ -124,7 +196,7 @@ namespace cantor
         os << '[';
         for (int i = 0; i < list.size(); i++)
         {
-            os << list.get(i) << ", ";
+            os << list[i] << ", ";
         }
         os << ']' << '\n';
 
