@@ -7,67 +7,69 @@
 
 // #include "playground/wierdo-table/WeirdoTable.h"
 #include "algorithms/Sorting.h"
+#include "datastructures/linear/LinkedList.h"
 #include "utility/Timer.h"
 
-void backBin(std::array<bool, 3> arr, bool exhasted)
-{
-    if (exhasted)
-        return;
+int count = 0;
 
-    for (auto ri = arr.crbegin(); ri != arr.crend(); ++ri)
-        std::cout << *ri;
-
-    bool flag{true};
-    for (bool &i : arr)
-    {
-        if (i == 0)
-        {
-            flag = false;
-            i = 1;
-            break;
-        }
-
-        i = 0;
-    }
-
-    std::cout << '\n';
-
-    backBin(arr, flag);
-}
-
-void backBin(std::array<int, 5> &arr, int n, int k)
+void backBin(std::array<int, 3> &arr, int n)
 {
     if (n < 1)
     {
-        for (auto ri = arr.crbegin(); ri != arr.crend(); ++ri)
-            std::cout << *ri;
+        if ((arr[0] == arr[1]) || (arr[0] == arr[2]) || (arr[1] == arr[2]))
+        {
+            ++count;
 
-        std::cout << '\n';
+            for (auto ri = arr.crbegin(); ri != arr.crend(); ++ri)
+                std::cout << *ri;
+
+            std::cout << '\n';
+        }
 
         return;
     }
 
-    for (int i = 0; i < k; ++i)
+    for (int i = 1; i <= 9; i++)
     {
         arr[n - 1] = i;
 
-        backBin(arr, n - 1, k);
+        backBin(arr, n - 1);
     }
+}
+
+int bound(std::vector<int> vec)
+{
+    size_t lis{0};
+
+    for (size_t left_bound{0}; left_bound < vec.size(); ++left_bound)
+    {
+        size_t temp_lis{0};
+
+        size_t right_bound{vec.size() - 1};
+        while (vec[left_bound] > vec[right_bound])
+            --right_bound;
+    }
+
+    return lis;
 }
 
 int main()
 {
-    std::vector<int> vec{10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+    // std::vector<int> vec{10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
     // std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    // std::vector<int> vec{8, 2, 5, 1, 9, 10, 4, 3, 6, 7};
-    {
-        util::Timer timer;
-        ocd::merge(vec);
-    }
-    for (int i : vec)
-    {
-        std::cout << i << std::endl;
-    }
+    // std::vector<int> vec{8, 2, 10, 1, 9, 5, 4, 3, 6, 7};
+    // std::vector<int> vec{5, 2, 8, 6, 3, 6, 9, 5};
+
+    cantor::LinkedList list;
+    list.push_back(8);
+    list.push_back(2);
+    list.push_back(10);
+    list.push_back(1);
+    list.push_back(9);
+
+    list.insert(3, 2);
+
+    std::cout << list;
 
     return 0;
 }
