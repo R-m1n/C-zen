@@ -55,10 +55,10 @@ int bound(std::vector<int> vec)
 
 int main()
 {
-    // std::vector<int> vec{10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
-    // std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    // std::vector<int> vec{8, 2, 10, 1, 9, 5, 4, 3, 6, 7};
-    // std::vector<int> vec{5, 2, 8, 6, 3, 6, 9, 5};
+    std::vector<int> vec{10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+    std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    std::vector<int> vec{8, 2, 10, 1, 9, 5, 4, 3, 6, 7};
+    std::vector<int> vec{5, 2, 8, 6, 3, 6, 9, 5};
 
     cantor::LinkedList<int> list;
     list.push_back(8);
@@ -67,13 +67,15 @@ int main()
     list.push_back(1);
     list.push_back(9);
 
-    list.insert(3, 2);
+    // list.insert(3, 2);
 
-    std::cout << list;
+    // std::cout << list;
+    for (auto i : list)
+        std::cout << i << std::endl;
 
-    list.remove(3);
+    // list.remove(3);
 
-    std::cout << list;
+    // std::cout << list;
 
     return 0;
 }

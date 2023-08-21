@@ -4,13 +4,96 @@
 
 namespace cantor
 {
+    template <typename List>
+    class ListIterator
+    {
+    public:
+        using value_type = typename List::value_type;
+
+        ListIterator() = delete;
+
+        value_type &operator++()
+        {
+            node = node->next;
+
+            return node->value;
+        }
+
+        value_type operator++(int)
+        {
+            value_type temp{node->value};
+
+            node = node->next;
+
+            return temp;
+        }
+
+        value_type &operator--()
+        {
+            node = node->prev;
+
+            return node->value;
+        }
+
+        value_type operator--(int)
+        {
+            value_type temp{node->value};
+
+            node = node->prev;
+
+            return temp;
+        }
+
+        value_type operator+(int n)
+        {
+            for (int i = 0; i < n; ++i)
+                node = node->next;
+
+            return node->value;
+        }
+
+        value_type operator-(int n)
+        {
+            for (int i = 0; i < n; ++i)
+                node = node->prev;
+
+            return node->value;
+        }
+
+        bool operator==(ListIterator<List> other)
+        {
+            return node == other.node;
+        }
+
+        bool operator!=(ListIterator<List> other)
+        {
+            return !(*this == other);
+        }
+
+        value_type operator*()
+        {
+            return node->value;
+        }
+
+        template <typename T>
+        friend class LinkedList;
+
+    private:
+        using Node = typename List::Node;
+
+        ListIterator(Node *node) : node{node} {}
+
+        Node *node;
+    };
+
     template <typename T>
     class LinkedList
     {
     public:
         using value_type = T;
+        using iterator = ListIterator<LinkedList<T>>;
 
-        LinkedList() : front{new Node()}, back{new Node()}, count{0} {};
+        LinkedList() : front{nullptr}, back{nullptr}, count{0} {};
 
         ~LinkedList()
         {
@@ -22,17 +105,27 @@ namespace cantor
             count = 0;
         }
 
-        Error push_back(T data);
+        Error push_back(T value);
 
-        Error push_front(T data);
+        Error push_front(T value);
 
-        Error insert(T data, size_t index);
+        Error insert(T value, size_t index);
 
         Error remove_back();
 
         Error remove_front();
 
         Error remove(size_t index);
+
+        iterator begin() const
+        {
+            return iterator(front);
+        }
+
+        iterator end() const
+        {
+            return iterator(back->next);
+        }
 
         size_t size() const
         {
@@ -41,22 +134,27 @@ namespace cantor
 
         T &operator[](size_t index) const
         {
-            return get(index)->data;
+            return get(index)->value;
         }
+
+        template <typename List>
+        friend class ListIterator;
 
     private:
         struct Node
         {
-            T data;
+            T value;
             Node *next;
             Node *prev;
 
-            Node() : data{0}, next{nullptr}, prev{nullptr} {}
+            Node() : value{0}, next{nullptr}, prev{nullptr} {}
         };
 
-        void list_init(T data)
+        void list_init(T value)
         {
-            front->data = data;
+            front = new Node();
+
+            front->value = value;
             back = front;
 
             ++count;
@@ -79,11 +177,11 @@ namespace cantor
     };
 
     template <typename T>
-    Error LinkedList<T>::push_back(T data)
+    Error LinkedList<T>::push_back(T value)
     {
         if (!count)
         {
-            list_init(data);
+            list_init(value);
 
             return Ok;
         }
@@ -91,7 +189,7 @@ namespace cantor
         Node *node{new Node()};
 
         node->prev = back;
-        node->data = data;
+        node->value = value;
         back->next = node;
 
         back = node;
@@ -102,11 +200,11 @@ namespace cantor
     }
 
     template <typename T>
-    Error LinkedList<T>::push_front(T data)
+    Error LinkedList<T>::push_front(T value)
     {
         if (!count)
         {
-            list_init(data);
+            list_init(value);
 
             return Ok;
         }
@@ -114,7 +212,7 @@ namespace cantor
         Node *node{new Node()};
 
         node->next = front;
-        node->data = data;
+        node->value = value;
         front->prev = node;
 
         front = node;
@@ -124,7 +222,7 @@ namespace cantor
     }
 
     template <typename T>
-    Error LinkedList<T>::insert(T data, size_t index)
+    Error LinkedList<T>::insert(T value, size_t index)
     {
         if (count <= index || index < 0)
             return IndexOutOfRange;
@@ -133,7 +231,7 @@ namespace cantor
 
         Node *node{new Node()};
 
-        node->data = data;
+        node->value = value;
         node->next = temp;
         node->prev = temp->prev;
 

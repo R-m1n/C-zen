@@ -20,5 +20,5 @@ namespace cantor
 
     const Error Ok{ErrorType::None, ""};
     const Error IndexOutOfRange{ErrorType::IndexOutOfRange, "Index should be inside the container range."};
-    const Error EmptyContainer{ErrorType::EmptyContainer, "The list is empty."};
+    const Error EmptyContainer{ErrorType::EmptyContainer, "The container is empty."};
 }
