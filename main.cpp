@@ -71,11 +71,11 @@ int main()
 
     assert(list.insert(3, 2) == cantor::Error::None);
 
-    // std::cout << list;
-    for (auto i : list)
-        std::cout << i << std::endl;
+    // // std::cout << list;
+    for (cantor::LinkedList<int>::reverse_iterator riter = list.rbegin(); riter != list.rend(); ++riter)
+        std::cout << *riter << std::endl;
 
-    list.clear();
+    // list.clear();
 
     // list.remove(3);
 

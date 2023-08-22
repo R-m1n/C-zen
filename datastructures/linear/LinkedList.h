@@ -76,7 +76,7 @@ namespace cantor
             return !(*this == other);
         }
 
-        value_type operator*()
+        value_type &operator*()
         {
             return node->value;
         }
@@ -92,12 +92,94 @@ namespace cantor
         Node *node;
     };
 
+    template <typename List>
+    class ReverseListIterator
+    {
+    public:
+        using iterator = ListIterator<List>;
+        using value_type = typename iterator::value_type;
+
+        ReverseListIterator() = delete;
+
+        value_type &operator++()
+        {
+            --iter;
+
+            return *iter;
+        }
+
+        value_type operator++(int)
+        {
+            value_type temp{*iter};
+
+            --iter;
+
+            return temp;
+        }
+
+        value_type &operator--()
+        {
+            ++iter;
+
+            return *iter;
+        }
+
+        value_type operator--(int)
+        {
+            value_type temp{*iter};
+
+            ++iter;
+
+            return temp;
+        }
+
+        value_type operator+(int n)
+        {
+            for (int i = 0; i < n; ++i)
+                --iter;
+
+            return *iter;
+        }
+
+        value_type operator-(int n)
+        {
+            for (int i = 0; i < n; ++i)
+                ++iter;
+
+            return *iter;
+        }
+
+        bool operator==(ReverseListIterator<List> other)
+        {
+            return iter == other.iter;
+        }
+
+        bool operator!=(ReverseListIterator<List> other)
+        {
+            return !(*this == other);
+        }
+
+        value_type operator*()
+        {
+            return *iter;
+        }
+
+        template <typename T>
+        friend class LinkedList;
+
+    private:
+        ReverseListIterator(iterator iter) : iter{iter} {}
+
+        iterator iter;
+    };
+
     template <typename T>
     class LinkedList
     {
     public:
         using value_type = T;
         using iterator = ListIterator<LinkedList<T>>;
+        using reverse_iterator = ReverseListIterator<LinkedList<T>>;
 
         LinkedList() : front{nullptr}, back{nullptr}, count{0} {};
 
@@ -128,6 +210,16 @@ namespace cantor
         iterator end() const
         {
             return iterator(back->next);
+        }
+
+        reverse_iterator rbegin() const
+        {
+            return reverse_iterator(iterator(back));
+        }
+
+        reverse_iterator rend() const
+        {
+            return reverse_iterator(iterator(front->prev));
         }
 
         size_t size() const
