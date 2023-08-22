@@ -103,12 +103,7 @@ namespace cantor
 
         ~LinkedList()
         {
-            delete front;
-            delete back;
-
-            front = nullptr;
-            back = nullptr;
-            count = 0;
+            clear();
         }
 
         void push_back(value_type value);
@@ -123,6 +118,8 @@ namespace cantor
 
         const Error remove(size_t index);
 
+        void clear();
+
         iterator begin() const
         {
             return iterator(front);
@@ -136,6 +133,11 @@ namespace cantor
         size_t size() const
         {
             return count;
+        }
+
+        bool is_empty() const
+        {
+            return count == 0;
         }
 
         T &operator[](size_t index) const
@@ -185,7 +187,7 @@ namespace cantor
     template <typename T>
     void LinkedList<T>::push_back(value_type value)
     {
-        if (!count)
+        if (is_empty())
         {
             list_init(value);
 
@@ -206,7 +208,7 @@ namespace cantor
     template <typename T>
     void LinkedList<T>::push_front(value_type value)
     {
-        if (!count)
+        if (is_empty())
         {
             list_init(value);
 
@@ -227,8 +229,25 @@ namespace cantor
     template <typename T>
     const Error LinkedList<T>::insert(value_type value, size_t index)
     {
-        if (count <= index || index < 0)
+        if (is_empty())
+            return Error::EmptyContainer;
+
+        if (index < 0 || index > count)
             return Error::IndexOutOfRange;
+
+        if (index == 0)
+        {
+            push_front(value);
+
+            return Error::None;
+        }
+
+        if (index == count)
+        {
+            push_back(value);
+
+            return Error::None;
+        }
 
         Node *temp{get(index)};
 
@@ -239,6 +258,7 @@ namespace cantor
         node->prev = temp->prev;
 
         (temp->prev)->next = node;
+
         temp->prev = node;
 
         ++count;
@@ -249,7 +269,7 @@ namespace cantor
     template <typename T>
     const Error LinkedList<T>::remove_back()
     {
-        if (!count)
+        if (is_empty())
             return Error::EmptyContainer;
 
         Node *temp{back->prev};
@@ -266,7 +286,7 @@ namespace cantor
     template <typename T>
     const Error LinkedList<T>::remove_front()
     {
-        if (!count)
+        if (is_empty())
             return Error::EmptyContainer;
 
         Node *temp{front->next};
@@ -283,7 +303,7 @@ namespace cantor
     template <typename T>
     const Error LinkedList<T>::remove(size_t index)
     {
-        if (!count)
+        if (is_empty())
             return Error::EmptyContainer;
 
         if (count <= index || index < 0)
@@ -292,12 +312,14 @@ namespace cantor
         if (index == 0)
         {
             remove_front();
+
             return Error::None;
         }
 
         if (index == count - 1)
         {
             remove_back();
+
             return Error::None;
         }
 
@@ -306,10 +328,36 @@ namespace cantor
         (node->next)->prev = node->prev;
 
         delete node;
-        node = nullptr;
 
         --count;
 
         return Error::None;
+    }
+
+    template <typename T>
+    void LinkedList<T>::clear()
+    {
+        if (is_empty())
+            return;
+
+        Node *current = front->next;
+        Node *prev = front;
+
+        front = nullptr;
+
+        while (current != back)
+        {
+            delete prev;
+
+            prev = current;
+
+            current = current->next;
+        }
+
+        delete back;
+
+        back = nullptr;
+
+        count = 0;
     }
 }

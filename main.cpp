@@ -75,6 +75,8 @@ int main()
     for (auto i : list)
         std::cout << i << std::endl;
 
+    list.clear();
+
     // list.remove(3);
 
     // std::cout << list;
