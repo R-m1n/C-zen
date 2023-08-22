@@ -1,9 +1,15 @@
 #pragma once
 #include <iostream>
-#include "../Error.h"
 
 namespace cantor
 {
+    enum class Error : short
+    {
+        None = 0,
+        IndexOutOfRange,
+        EmptyContainer,
+    };
+
     template <typename List>
     class ListIterator
     {
@@ -105,17 +111,17 @@ namespace cantor
             count = 0;
         }
 
-        Error push_back(T value);
+        void push_back(value_type value);
 
-        Error push_front(T value);
+        void push_front(value_type value);
 
-        Error insert(T value, size_t index);
+        const Error insert(value_type value, size_t index);
 
-        Error remove_back();
+        const Error remove_back();
 
-        Error remove_front();
+        const Error remove_front();
 
-        Error remove(size_t index);
+        const Error remove(size_t index);
 
         iterator begin() const
         {
@@ -143,14 +149,14 @@ namespace cantor
     private:
         struct Node
         {
-            T value;
+            value_type value;
             Node *next;
             Node *prev;
 
             Node() : value{0}, next{nullptr}, prev{nullptr} {}
         };
 
-        void list_init(T value)
+        void list_init(value_type value)
         {
             front = new Node();
 
@@ -177,13 +183,13 @@ namespace cantor
     };
 
     template <typename T>
-    Error LinkedList<T>::push_back(T value)
+    void LinkedList<T>::push_back(value_type value)
     {
         if (!count)
         {
             list_init(value);
 
-            return Ok;
+            return;
         }
 
         Node *node{new Node()};
@@ -195,18 +201,16 @@ namespace cantor
         back = node;
 
         ++count;
-
-        return Ok;
     }
 
     template <typename T>
-    Error LinkedList<T>::push_front(T value)
+    void LinkedList<T>::push_front(value_type value)
     {
         if (!count)
         {
             list_init(value);
 
-            return Ok;
+            return;
         }
 
         Node *node{new Node()};
@@ -218,14 +222,13 @@ namespace cantor
         front = node;
 
         ++count;
-        return Ok;
     }
 
     template <typename T>
-    Error LinkedList<T>::insert(T value, size_t index)
+    const Error LinkedList<T>::insert(value_type value, size_t index)
     {
         if (count <= index || index < 0)
-            return IndexOutOfRange;
+            return Error::IndexOutOfRange;
 
         Node *temp{get(index)};
 
@@ -240,14 +243,14 @@ namespace cantor
 
         ++count;
 
-        return Ok;
+        return Error::None;
     }
 
     template <typename T>
-    Error LinkedList<T>::remove_back()
+    const Error LinkedList<T>::remove_back()
     {
         if (!count)
-            return EmptyContainer;
+            return Error::EmptyContainer;
 
         Node *temp{back->prev};
 
@@ -257,14 +260,14 @@ namespace cantor
 
         --count;
 
-        return Ok;
+        return Error::None;
     }
 
     template <typename T>
-    Error LinkedList<T>::remove_front()
+    const Error LinkedList<T>::remove_front()
     {
         if (!count)
-            return EmptyContainer;
+            return Error::EmptyContainer;
 
         Node *temp{front->next};
 
@@ -274,28 +277,28 @@ namespace cantor
 
         --count;
 
-        return Ok;
+        return Error::None;
     }
 
     template <typename T>
-    Error LinkedList<T>::remove(size_t index)
+    const Error LinkedList<T>::remove(size_t index)
     {
         if (!count)
-            return EmptyContainer;
+            return Error::EmptyContainer;
 
         if (count <= index || index < 0)
-            return IndexOutOfRange;
+            return Error::IndexOutOfRange;
 
         if (index == 0)
         {
             remove_front();
-            return Ok;
+            return Error::None;
         }
 
         if (index == count - 1)
         {
             remove_back();
-            return Ok;
+            return Error::None;
         }
 
         Node *node{get(index)};
@@ -307,19 +310,6 @@ namespace cantor
 
         --count;
 
-        return Ok;
-    }
-
-    template <typename T>
-    std::ostream &operator<<(std::ostream &os, const LinkedList<T> &list)
-    {
-        os << '[';
-        for (size_t i = 0; i < list.size(); i++)
-        {
-            os << list[i] << ", ";
-        }
-        os << ']' << '\n';
-
-        return os;
+        return Error::None;
     }
 }
