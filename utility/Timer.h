@@ -14,7 +14,7 @@ namespace util
         {
             std::chrono::duration<double, std::milli> duration = std::chrono::high_resolution_clock::now() - start;
 
-            std::cout << duration.count() * 1000 << '\n';
+            std::cout << duration.count() << "ms" << '\n';
         }
 
     private:

@@ -63,23 +63,25 @@ int main()
 
     cantor::LinkedList<int> list;
 
-    list.push_back(8);
-    list.push_back(2);
-    list.push_back(10);
-    list.push_back(1);
-    list.push_back(9);
+    // assert(list.insert(3, 2) == cantor::Error::None);
 
-    assert(list.insert(3, 2) == cantor::Error::None);
+    // for (auto &&i : list)
+    //     std::cout << i << '\n';
 
-    // // std::cout << list;
-    for (cantor::LinkedList<int>::reverse_iterator riter = list.rbegin(); riter != list.rend(); ++riter)
-        std::cout << *riter << std::endl;
+    for (int i = 0; i < 5; ++i)
+    {
+        for (int i = 1; i < 1000000; ++i)
+            list.push_back(i);
 
-    // list.clear();
+        {
+            util::Timer timer;
+            list.clear();
+        }
+    }
 
-    // list.remove(3);
+    // std::cout << list.size() << '\n';
 
-    // std::cout << list;
+    // list.remove_back();
 
     return 0;
 }
