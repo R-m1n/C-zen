@@ -54,6 +54,11 @@ int bound(std::vector<int> vec)
     return lis;
 }
 
+struct Whatever
+{
+    int *n = nullptr;
+};
+
 int main()
 {
     // std::vector<int> vec{10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
@@ -62,22 +67,31 @@ int main()
     // std::vector<int> vec{5, 2, 8, 6, 3, 6, 9, 5};
 
     cantor::LinkedList<int> list;
+    cantor::LinkedList<int> list1{1, 2, 3, 4, 5};
+    // cantor::LinkedList<int>::iterator iter;
 
     // assert(list.insert(3, 2) == cantor::Error::None);
 
-    // for (auto &&i : list)
-    //     std::cout << i << '\n';
+    // for (int i = 0; i < 5; ++i)
+    // {
 
-    for (int i = 0; i < 5; ++i)
-    {
-        for (int i = 1; i < 1000000; ++i)
-            list.push_back(i);
+    //     for (int i = 1; i < 1000000; ++i)
+    //         list.push_back(i);
+    //     {
+    //         util::Timer timer;
+    //         list.clear();
+    //     }
+    // }
+    for (int i = 1; i < 5; ++i)
+        list.push_back(i);
 
-        {
-            util::Timer timer;
-            list.clear();
-        }
-    }
+    for (auto &&i : list1)
+        std::cout << i << '\n';
+
+    // {
+    //     util::Timer timer;
+    //     list.find(0);
+    // }
 
     // std::cout << list.size() << '\n';
 

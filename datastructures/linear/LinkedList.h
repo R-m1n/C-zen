@@ -183,6 +183,22 @@ namespace cantor
 
         LinkedList() : front{nullptr}, back{nullptr}, count{0} {};
 
+        LinkedList(const LinkedList<T> &list)
+        {
+            *this = list;
+        };
+
+        LinkedList(LinkedList<T> &&list)
+        {
+            *this = std::move(list);
+        };
+
+        LinkedList(std::initializer_list<T> list)
+        {
+            for (const auto &item : list)
+                push_back(item);
+        };
+
         ~LinkedList()
         {
             clear();
@@ -199,8 +215,6 @@ namespace cantor
         const Error remove_front();
 
         const Error remove(size_t index);
-
-        size_t find(value_type value) const;
 
         void clear();
 
@@ -234,10 +248,13 @@ namespace cantor
             return count == 0;
         }
 
-        T &operator[](size_t index) const
+        value_type &operator[](size_t index) const
         {
             return get(index)->value;
         }
+
+        LinkedList<T> &operator=(const LinkedList<T> &list);
+        LinkedList<T> &operator=(LinkedList<T> &&list);
 
         template <typename List>
         friend class ListIterator;
@@ -480,5 +497,40 @@ namespace cantor
 
         front = nullptr;
         back = nullptr;
+    }
+
+    template <typename T>
+    LinkedList<T> &LinkedList<T>::operator=(const LinkedList<T> &list)
+    {
+        if (this != &list)
+        {
+            clear();
+
+            for (const auto &item : list)
+                push_back(item);
+        }
+
+        return *this;
+    }
+
+    template <typename T>
+    LinkedList<T> &LinkedList<T>::operator=(LinkedList<T> &&list)
+    {
+        if (this != &list)
+        {
+            clear();
+
+            front = list.front;
+            back = list.back;
+
+            count = list.count;
+
+            list.front = nullptr;
+            list.back = nullptr;
+
+            list.count = 0;
+        }
+
+        return *this;
     }
 }
