@@ -44,18 +44,28 @@ int main()
     // std::vector<int> vec{5, 2, 8, 6, 3, 6, 9, 5};
 
     cantor::Stack<int, 5> s;
+    cantor::Stack<int, 5> s1;
 
     s.push(1);
     s.push(5);
     s.push(6);
     s.push(7);
-    s.push(2);
 
-    while (s.size())
+    s1 = std::move(s);
+
+    while (s1.size())
     {
-        auto [value, err] = s.pop();
+        auto [value, err] = s1.pop();
 
         std::cout << value.value_or(0) << '\n';
     }
+
+    // while (s.size())
+    // {
+    //     auto [value, err] = s.pop();
+
+    //     std::cout << value.value_or(0) << '\n';
+    // }
+
     return 0;
 }
