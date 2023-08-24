@@ -1,15 +1,10 @@
 #pragma once
+
 #include <iostream>
+#include "../Error.h"
 
 namespace cantor
 {
-    enum class Error : short
-    {
-        None = 0,
-        IndexOutOfRange,
-        EmptyContainer,
-    };
-
     template <typename List>
     class ListIterator
     {
@@ -254,6 +249,7 @@ namespace cantor
         }
 
         LinkedList<T> &operator=(const LinkedList<T> &list);
+
         LinkedList<T> &operator=(LinkedList<T> &&list);
 
         template <typename List>
