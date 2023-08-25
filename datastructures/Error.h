@@ -6,7 +6,7 @@ namespace cantor
     {
         None = 0,
         IndexOutOfRange,
-        EmptyContainer,
+        EmptyList,
         StackOverFlow,
         EmptyStack,
     };

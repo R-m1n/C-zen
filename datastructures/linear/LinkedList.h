@@ -337,7 +337,7 @@ namespace cantor
     const Error LinkedList<T>::insert(value_type value, size_t index)
     {
         if (is_empty())
-            return Error::EmptyContainer;
+            return Error::EmptyList;
 
         if (index < 0 || index > count)
             return Error::IndexOutOfRange;
@@ -377,7 +377,7 @@ namespace cantor
     const Error LinkedList<T>::remove_back()
     {
         if (is_empty())
-            return Error::EmptyContainer;
+            return Error::EmptyList;
 
         if (count == 1)
         {
@@ -406,7 +406,7 @@ namespace cantor
     const Error LinkedList<T>::remove_front()
     {
         if (is_empty())
-            return Error::EmptyContainer;
+            return Error::EmptyList;
 
         if (count == 1)
         {
@@ -435,7 +435,7 @@ namespace cantor
     const Error LinkedList<T>::remove(size_t index)
     {
         if (is_empty())
-            return Error::EmptyContainer;
+            return Error::EmptyList;
 
         if (count <= index || index < 0)
             return Error::IndexOutOfRange;
