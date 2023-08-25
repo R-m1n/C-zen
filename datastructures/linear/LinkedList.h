@@ -213,6 +213,11 @@ namespace cantor
 
         void clear();
 
+        void reverse()
+        {
+            reverse(front, front->next);
+        }
+
         iterator begin() const
         {
             return iterator(front);
@@ -283,6 +288,32 @@ namespace cantor
                 node = node->next;
 
             return node;
+        }
+
+        void reverse(Node *node, Node *next)
+        {
+            if (next == back)
+            {
+                next->prev = nullptr;
+
+                next->next = node;
+
+                node->prev = next;
+
+                front = next;
+
+                return;
+            }
+
+            reverse(next, next->next);
+
+            next->next = node;
+
+            node->prev = next;
+
+            back = node;
+
+            back->next = nullptr;
         }
 
         Node *front;

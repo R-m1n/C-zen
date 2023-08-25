@@ -2,12 +2,11 @@
 #include <string>
 #include <vector>
 #include <array>
-#include <cassert>
 
 #include "algorithms/Sorting.h"
 #include "datastructures/linear/LinkedList.h"
 #include "datastructures/linear/Stack.h"
-#include "datastructures/linear/Array.h"
+// #include "datastructures/linear/Array.h"
 #include "utility/Timer.h"
 
 int count = 0;
@@ -50,17 +49,28 @@ int main()
     // std::vector<int> vec{8, 2, 10, 1, 9, 5, 4, 3, 6, 7};
     // std::vector<int> vec{5, 2, 8, 6, 3, 6, 9, 5};
 
-    cantor::Array<int, 4> arr;
+    cantor::LinkedList<int> list;
 
-    int arr1[8];
+    list.push_back(1);
+    list.push_back(2);
+    list.push_back(3);
+    list.push_back(4);
+    list.push_back(5);
+    list.push_back(6);
 
-    // for (auto &&i : arr)
+    // int arr1[8];
+
+    // for (auto &&i : list)
     // {
-    //     std::cout << i;
+    //     std::cout << i << '\n';
     // }
 
-    auto &&i = increment(1);
-    std::cout << i;
+    list.reverse();
+
+    for (auto &&i : list)
+    {
+        std::cout << i << '\n';
+    }
 
     // while (s.size())
     // {
