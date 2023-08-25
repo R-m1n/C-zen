@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <stdexcept>
 
 namespace cantor
 {
@@ -13,7 +14,7 @@ namespace cantor
         using pointer_type = value_type *;
 
         using iterator = ArrayIterator<Array>;
-        using iterator_reference = ArrayIterator<Array>;
+        using iterator_reference = iterator &;
 
         constexpr ArrayIterator(pointer_type value_ptr) : value_ptr{value_ptr} {}
 
@@ -172,65 +173,120 @@ namespace cantor
         using temporary_type = value_type &&;
         using pointer_type = value_type *;
 
-        using iterator = ArrayIterator<Array<T, S>>;
+        using iterator = ArrayIterator<ArrayList<T>>;
 
-        reference_type front() const noexcept
+        constexpr ArrayList() : m_array{nullptr}, m_count{0}, m_capacity{0} {}
+
+        constexpr ArrayList(size_t n) : m_array{new value_type[n]}, m_count{0}, m_capacity{n} {}
+
+        ~ArrayList()
         {
-            return array[0];
+            if (!m_array)
+                delete[] m_array;
+
+            m_array = nullptr;
+            m_count = 0;
+            m_capacity = 0;
         }
 
-        reference_type back() const noexcept
+        reference_type at(size_t index)
         {
-            return array[size() - 1];
+            return (0 <= index < m_count) ? m_array[index] : throw std::out_of_range("index out of range!");
         }
 
-        pointer_type data() const noexcept
+        reference_type operator[](size_t index)
         {
-            return array;
+            return m_array[index];
         }
 
-        void fill(const reference_type value) noexcept
+        reference_type front()
         {
-            for (auto &&i : array)
-                i = value;
+            return *m_array;
         }
 
-        void fill(temporary_type value) noexcept
+        reference_type back()
         {
-            fill(value);
+            return *(m_array + m_count - 1);
         }
 
-        constexpr size_t size() const noexcept
+        pointer_type data()
         {
-            return S;
+            return m_array;
         }
 
-        constexpr iterator begin() const noexcept
+        bool is_empty()
         {
-            return iterator(const_cast<pointer_type>(array));
+            return m_count == 0;
         }
 
-        constexpr iterator end() const noexcept
+        size_t size()
         {
-            return iterator(const_cast<pointer_type>(array) + size());
+            return m_count;
         }
 
-        constexpr iterator begin() noexcept
+        size_t capacity()
         {
-            return iterator(array);
+            return m_capacity;
         }
 
-        constexpr iterator end() noexcept
+        constexpr void reserve(size_t n)
         {
-            return iterator(array + size());
+            if (n > m_capacity)
+            {
+                m_array = new value_type[n];
+                m_capacity = n;
+            }
         }
 
-        constexpr reference_type operator[](size_t index) const noexcept
+        void push_back(const reference_type value)
         {
-            return array[index];
+            if (m_count == m_capacity)
+                resize();
+
+            m_array[m_count++] = value;
+        }
+
+        void pop_back()
+        {
+            --m_count;
+
+            if (m_count <= (m_capacity / 2))
+                shrink();
+        }
+
+        void resize()
+        {
+            m_capacity = (m_capacity * 2) + 1;
+
+            allocate();
+        }
+
+        void shrink()
+        {
+            m_capacity = (m_capacity - 1) / 2;
+
+            allocate();
+        }
+
+        void allocate()
+        {
+            pointer_type temp = new value_type[m_capacity];
+
+            std::copy(m_array, m_array + m_count, temp);
+
+            delete[] m_array;
+
+            m_array = temp;
+        }
+
+        void clear()
+        {
+            m_count = 0;
         }
 
     private:
-        value_type array[S];
+        pointer_type m_array;
+        size_t m_count;
+        size_t m_capacity;
     };
 }

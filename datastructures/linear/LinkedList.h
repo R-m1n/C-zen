@@ -213,10 +213,7 @@ namespace cantor
 
         void clear();
 
-        void reverse()
-        {
-            reverse(front, front->next);
-        }
+        void reverse();
 
         iterator begin() const
         {
@@ -290,31 +287,7 @@ namespace cantor
             return node;
         }
 
-        void reverse(Node *node, Node *next)
-        {
-            if (next == back)
-            {
-                next->prev = nullptr;
-
-                next->next = node;
-
-                node->prev = next;
-
-                front = next;
-
-                return;
-            }
-
-            reverse(next, next->next);
-
-            next->next = node;
-
-            node->prev = next;
-
-            back = node;
-
-            back->next = nullptr;
-        }
+        void reverse(Node *node, Node *next);
 
         Node *front;
         Node *back;
@@ -527,6 +500,28 @@ namespace cantor
     }
 
     template <typename T>
+    void LinkedList<T>::reverse()
+    {
+        if (is_empty() || count == 1)
+            return;
+
+        if (count == 2)
+        {
+            back->prev = nullptr;
+            back->next = front;
+
+            front->prev = back;
+            front->next = nullptr;
+
+            std::swap(back, front);
+
+            return;
+        }
+
+        reverse(front, front->next);
+    }
+
+    template <typename T>
     LinkedList<T> &LinkedList<T>::operator=(const LinkedList<T> &list)
     {
         if (this != &list)
@@ -559,5 +554,32 @@ namespace cantor
         }
 
         return *this;
+    }
+
+    template <typename T>
+    void LinkedList<T>::reverse(Node *node, Node *next)
+    {
+        if (next == back)
+        {
+            next->prev = nullptr;
+
+            next->next = node;
+
+            node->prev = next;
+
+            front = next;
+
+            return;
+        }
+
+        reverse(next, next->next);
+
+        next->next = node;
+
+        node->prev = next;
+
+        back = node;
+
+        back->next = nullptr;
     }
 }
