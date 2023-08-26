@@ -201,7 +201,6 @@ namespace cantor
 
         ~ArrayList()
         {
-            std::cout << "array destroyed!\n";
             delete[] m_array;
 
             m_array = nullptr;

@@ -91,6 +91,11 @@ namespace cantor
 
         StackArray() {}
 
+        StackArray(size_t n) :
+        {
+            stack.reserve(n);
+        }
+
         StackArray(const StackArray<value_type> &other)
         {
             *this = other;

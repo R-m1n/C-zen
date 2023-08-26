@@ -56,7 +56,7 @@ int main()
     stack.push(40);
     stack.push(50);
 
-    cantor::StackArray<int> stack1 = stack;
+    cantor::StackArray<int> stack1 = std::move(stack);
 
     // while (!stack.is_empty())
     //     std::cout << stack.pop() << '\n';
