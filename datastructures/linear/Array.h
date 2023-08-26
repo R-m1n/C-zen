@@ -160,7 +160,12 @@ namespace cantor
             return iterator(array + size());
         }
 
-        constexpr reference_type operator[](size_t index) const noexcept
+        constexpr reference_type operator[](size_t index) noexcept
+        {
+            return array[index];
+        }
+
+        constexpr const reference_type operator[](size_t index) const noexcept
         {
             return array[index];
         }
@@ -182,7 +187,7 @@ namespace cantor
 
         ArrayList() : m_array{nullptr}, m_count{0}, m_capacity{0} {}
 
-        ArrayList(size_t n) : m_array{new value_type[n]}, m_count{0}, m_capacity{n} {}
+        explicit ArrayList(size_t n) : m_array{new value_type[n]}, m_count{0}, m_capacity{n} {}
 
         ArrayList(const ArrayList<value_type> &other)
         {
@@ -196,8 +201,8 @@ namespace cantor
 
         ~ArrayList()
         {
-            if (!m_array)
-                delete[] m_array;
+            std::cout << "array destroyed!\n";
+            delete[] m_array;
 
             m_array = nullptr;
             m_count = 0;
@@ -251,12 +256,17 @@ namespace cantor
 
         iterator end() const noexcept
         {
-            return iterator(m_array + m_count - 1);
+            return iterator(m_array + m_count);
         }
 
         void clear() noexcept
         {
             m_count = 0;
+        }
+
+        void push_back(temporary_type value)
+        {
+            push_back(value);
         }
 
         void reserve(size_t n);
@@ -330,7 +340,7 @@ namespace cantor
 
             m_array = new value_type[m_capacity];
 
-            std::copy(other.begin().base(), other.end().base(), m_array);
+            std::copy(other.m_array, other.m_array + other.m_count, m_array);
 
             m_count = other.size();
         }

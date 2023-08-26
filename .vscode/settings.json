@@ -49,5 +49,6 @@
         "ctime": "cpp",
         "ratio": "cpp",
         "span": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "enabled"
 }

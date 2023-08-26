@@ -49,59 +49,20 @@ int main()
     // std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     // std::vector<int> vec{8, 2, 10, 1, 9, 5, 4, 3, 6, 7};
 
-    // std::vector<int> vec;
-    cantor::ArrayList<int> vec;
+    cantor::StackArray<int> stack;
+    stack.push(10);
+    stack.push(20);
+    stack.push(30);
+    stack.push(40);
+    stack.push(50);
 
-    for (int i = 0; i <= 15; ++i)
-    {
-        vec.push_back(i);
-        std::cout << vec.back() << ' ';
-        std::cout << vec.capacity() << std::endl;
-    }
-    std::cout << vec.back() << ' ';
-    std::cout << vec.capacity() << std::endl;
+    cantor::StackArray<int> stack1 = stack;
 
-    std::cout << '\n';
+    // while (!stack.is_empty())
+    //     std::cout << stack.pop() << '\n';
 
-    cantor::ArrayList<int> vec1 = std::move(vec);
-    for (auto &&i : vec1)
-        std::cout << i << '\n';
-
-    // std::cout << '\n';
-
-    // for (int i = 10; i <= 25; ++i)
-    // {
-    //     vec.push_back(i);
-    //     std::cout << vec.back() << ' ';
-    //     std::cout << vec.capacity() << std::endl;
-    // }
-    // std::cout << vec.back() << ' ';
-    // std::cout << vec.capacity() << std::endl;
-
-    // for (int i = 0; i <= 15; ++i)
-    //     std::cout << vec.back() << '\n';
-
-    // std::cout << vec.max_size() << std::endl;
-    // std::cout << vec.capacity() << std::endl;
-    // std::cout << vec.size() << std::endl;
-
-    // for (auto &&i : vec)
-    // {
-    //     std::cout << i << '\n';
-    // }
-    // std::cout << '\n';
-
-    // for (auto &&i : vec)
-    // {
-    //     std::cout << i << '\n';
-    // }
-
-    // while (s.size())
-    // {
-    //     auto [value, err] = s.pop();c
-
-    //     std::cout << value.value_or(0) << '\n';
-    // }
+    while (!stack1.is_empty())
+        std::cout << stack1.pop() << '\n';
 
     return 0;
 }

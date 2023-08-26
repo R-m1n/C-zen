@@ -3,69 +3,50 @@
 #include <iostream>
 #include <utility>
 #include <optional>
+#include "Array.h"
 #include "../Error.h"
 
 namespace cantor
 {
-    template <typename T, size_t Capacity>
+    template <typename T, size_t S>
     class Stack
     {
     public:
         using value_type = T;
+        using reference_type = T &;
+        using temporary_type = T &&;
+        using pointer_type = T *;
 
-        Stack() : stack{new value_type[Capacity]}, top_ptr{0} {}
+        constexpr const Error push(const reference_type value) noexcept;
 
-        ~Stack()
-        {
-            delete[] stack;
+        constexpr const Error push(temporary_type value) noexcept;
 
-            stack = nullptr;
+        constexpr std::pair<std::optional<value_type>, const Error> pop() noexcept;
 
-            top_ptr = 0;
-        }
+        constexpr std::pair<std::optional<value_type>, const Error> top() noexcept;
 
-        Stack(const Stack<value_type, Capacity> &other)
-        {
-            *this = other;
-        }
-
-        Stack(Stack<value_type, Capacity> &&other)
-        {
-            *this = std::move(other);
-        }
-
-        Error push(value_type value);
-
-        std::pair<std::optional<value_type>, Error> pop();
-
-        std::pair<std::optional<value_type>, Error> top() const;
-
-        size_t size() const
+        constexpr size_t size() const noexcept
         {
             return top_ptr;
         }
 
-        bool is_empty() const
+        constexpr bool is_empty() const noexcept
         {
             return top_ptr == 0;
         }
 
-        bool is_full() const
+        constexpr bool is_full() const noexcept
         {
-            return top_ptr == Capacity;
+            return top_ptr == S;
         }
 
-        Stack<value_type, Capacity> &operator=(const Stack<value_type, Capacity> &other);
-
-        Stack<value_type, Capacity> &operator=(Stack<value_type, Capacity> &&other);
-
     private:
-        value_type *stack;
-        size_t top_ptr;
+        cantor::Array<value_type, S> stack;
+        size_t top_ptr = 0;
     };
 
-    template <typename T, size_t Capacity>
-    Error Stack<T, Capacity>::push(value_type value)
+    template <typename T, size_t S>
+    constexpr const Error Stack<T, S>::push(const reference_type value) noexcept
     {
         if (is_full())
             return Error::StackOverFlow;
@@ -75,8 +56,14 @@ namespace cantor
         return Error::None;
     }
 
-    template <typename T, size_t Capacity>
-    std::pair<std::optional<T>, Error> Stack<T, Capacity>::pop()
+    template <typename T, size_t S>
+    constexpr const Error Stack<T, S>::push(temporary_type value) noexcept
+    {
+        return push(value);
+    }
+
+    template <typename T, size_t S>
+    constexpr std::pair<std::optional<T>, const Error> Stack<T, S>::pop() noexcept
     {
         if (is_empty())
             return std::make_pair(std::make_optional<T>(), Error::EmptyStack);
@@ -84,8 +71,8 @@ namespace cantor
         return std::make_pair(stack[--top_ptr], Error::None);
     }
 
-    template <typename T, size_t Capacity>
-    std::pair<std::optional<T>, Error> Stack<T, Capacity>::top() const
+    template <typename T, size_t S>
+    constexpr std::pair<std::optional<T>, const Error> Stack<T, S>::top() noexcept
     {
         if (is_empty())
             return std::make_pair(std::make_optional<T>(), Error::EmptyStack);
@@ -93,39 +80,78 @@ namespace cantor
         return std::make_pair(stack[top_ptr - 1], Error::None);
     }
 
-    template <typename T, size_t Capacity>
-    Stack<T, Capacity> &Stack<T, Capacity>::operator=(const Stack<T, Capacity> &other)
+    template <typename T>
+    class StackArray
     {
-        if (this != &other)
+    public:
+        using value_type = T;
+        using reference_type = T &;
+        using temporary_type = T &&;
+        using pointer_type = T *;
+
+        StackArray() {}
+
+        StackArray(const StackArray<value_type> &other)
         {
-            delete[] stack;
-
-            stack = new value_type[Capacity];
-
-            std::copy(other.stack, other.stack + other.top_ptr, stack);
-
-            top_ptr = other.top_ptr;
+            *this = other;
         }
 
-        return *this;
-    }
-
-    template <typename T, size_t Capacity>
-    Stack<T, Capacity> &Stack<T, Capacity>::operator=(Stack<T, Capacity> &&other)
-    {
-        if (this != &other)
+        StackArray(StackArray<value_type> &&other)
         {
-            delete[] stack;
-
-            stack = other.stack;
-
-            top_ptr = other.top_ptr;
-
-            other.stack = nullptr;
-
-            other.top_ptr = 0;
+            *this = std::move(other);
         }
 
-        return *this;
-    }
+        void push(temporary_type value)
+        {
+            push(value);
+        }
+
+        void push(const reference_type value)
+        {
+            stack.push_back(value);
+        }
+
+        value_type pop()
+        {
+            value_type temp = top();
+
+            stack.pop_back();
+
+            return temp;
+        }
+
+        const reference_type top() const
+        {
+            return stack.back();
+        }
+
+        size_t size() const
+        {
+            return stack.size();
+        }
+
+        bool is_empty() const
+        {
+            return stack.is_empty();
+        }
+
+        StackArray<value_type> &operator=(const StackArray<value_type> &other)
+        {
+            if (this != &other)
+                stack = other.stack;
+
+            return *this;
+        }
+
+        StackArray<value_type> &operator=(StackArray<value_type> &&other)
+        {
+            if (this != &other)
+                stack = std::move(other.stack);
+
+            return *this;
+        }
+
+    private:
+        cantor::ArrayList<value_type> stack;
+    };
 }
