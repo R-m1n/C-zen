@@ -254,121 +254,138 @@ namespace cantor
             return iterator(m_array + m_count - 1);
         }
 
-        // const iterator begin() const noexcept
-        // {
-        //     return iterator(m_array);
-        // }
-
-        // const iterator end() const noexcept
-        // {
-        //     return iterator(m_array + m_count - 1);
-        // }
-
-        void reserve(size_t n)
-        {
-            if (n > m_capacity)
-            {
-                m_array = new value_type[n];
-                m_capacity = n;
-            }
-        }
-
-        void push_back(const reference_type value)
-        {
-            if (m_count == m_capacity)
-                resize();
-
-            m_array[m_count++] = value;
-        }
-
-        void pop_back()
-        {
-            --m_count;
-
-            if (m_count <= (m_capacity / 2))
-                shrink();
-        }
-
-        void clear()
+        void clear() noexcept
         {
             m_count = 0;
         }
 
-        void shrik_to_fit()
-        {
-            m_capacity = m_count;
+        void reserve(size_t n);
 
-            allocate();
-        }
+        void push_back(const reference_type value);
 
-        ArrayList<value_type> &operator=(const ArrayList<value_type> &other)
-        {
-            if (this != &other)
-            {
-                delete[] m_array;
+        void pop_back();
 
-                m_capacity = other.capacity();
+        void shrik_to_fit();
 
-                m_array = new value_type[m_capacity];
+        ArrayList<value_type> &operator=(const ArrayList<value_type> &other);
 
-                std::copy(other.begin().base(), other.end().base(), m_array);
-
-                m_count = other.size();
-            }
-
-            return *this;
-        }
-
-        ArrayList<value_type> &operator=(ArrayList<value_type> &&other)
-        {
-            if (this != &other)
-            {
-                delete[] m_array;
-
-                m_array = other.data();
-
-                m_count = other.size();
-
-                m_capacity = other.capacity();
-
-                other.m_array = nullptr;
-
-                other.m_count = 0;
-
-                other.m_capacity = 0;
-            }
-
-            return *this;
-        }
+        ArrayList<value_type> &operator=(ArrayList<value_type> &&other);
 
     private:
         pointer_type m_array = nullptr;
         size_t m_count = 0;
         size_t m_capacity = 0;
 
-        void resize()
-        {
-            m_capacity = (m_capacity * 2) + 1;
+        void resize();
 
-            allocate();
+        void shrink();
+
+        void allocate();
+    };
+
+    template <typename T>
+    void ArrayList<T>::reserve(size_t n)
+    {
+        if (n > m_capacity)
+        {
+            m_array = new value_type[n];
+            m_capacity = n;
         }
+    }
 
-        void shrink()
+    template <typename T>
+    void ArrayList<T>::push_back(const reference_type value)
+    {
+        if (m_count == m_capacity)
+            resize();
+
+        m_array[m_count++] = value;
+    }
+
+    template <typename T>
+    void ArrayList<T>::pop_back()
+    {
+        --m_count;
+
+        if (m_count <= (m_capacity / 2))
+            shrink();
+    }
+
+    template <typename T>
+    void ArrayList<T>::shrik_to_fit()
+    {
+        m_capacity = m_count;
+
+        allocate();
+    }
+
+    template <typename T>
+    ArrayList<T> &ArrayList<T>::operator=(const ArrayList<value_type> &other)
+    {
+        if (this != &other)
         {
-            m_capacity = (m_capacity - 1) / 2;
-
-            allocate();
-        }
-
-        void allocate()
-        {
-            pointer_type temp = new value_type[m_capacity];
-
-            std::copy(m_array, m_array + m_count, temp);
-
             delete[] m_array;
 
-            m_array = temp;
+            m_capacity = other.capacity();
+
+            m_array = new value_type[m_capacity];
+
+            std::copy(other.begin().base(), other.end().base(), m_array);
+
+            m_count = other.size();
         }
-    };
+
+        return *this;
+    }
+
+    template <typename T>
+    ArrayList<T> &ArrayList<T>::operator=(ArrayList<value_type> &&other)
+    {
+        if (this != &other)
+        {
+            delete[] m_array;
+
+            m_array = other.data();
+
+            m_count = other.size();
+
+            m_capacity = other.capacity();
+
+            other.m_array = nullptr;
+
+            other.m_count = 0;
+
+            other.m_capacity = 0;
+        }
+
+        return *this;
+    }
+
+    template <typename T>
+    void ArrayList<T>::resize()
+    {
+        m_capacity = (m_capacity * 2) + 1;
+
+        allocate();
+    }
+
+    template <typename T>
+    void ArrayList<T>::shrink()
+    {
+        m_capacity = (m_capacity - 1) / 2;
+
+        allocate();
+    }
+
+    template <typename T>
+    inline void ArrayList<T>::allocate()
+    {
+        pointer_type temp = new value_type[m_capacity];
+
+        std::copy(m_array, m_array + m_count, temp);
+
+        delete[] m_array;
+
+        m_array = temp;
+    }
 }

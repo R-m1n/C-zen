@@ -63,7 +63,7 @@ int main()
 
     std::cout << '\n';
 
-    cantor::ArrayList<int> vec1 = vec;
+    cantor::ArrayList<int> vec1 = std::move(vec);
     for (auto &&i : vec1)
         std::cout << i << '\n';
 
