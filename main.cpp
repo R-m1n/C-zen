@@ -48,31 +48,38 @@ int main()
     // std::vector<int> vec{10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
     // std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     // std::vector<int> vec{8, 2, 10, 1, 9, 5, 4, 3, 6, 7};
-    // std::vector<int> vec{5, 2, 8, 6, 3, 6, 9, 5};
+
     // std::vector<int> vec;
     cantor::ArrayList<int> vec;
 
     for (int i = 0; i <= 15; ++i)
     {
-        std::cout << vec.size() << ' ';
-        std::cout << vec.capacity() << std::endl;
         vec.push_back(i);
+        std::cout << vec.back() << ' ';
+        std::cout << vec.capacity() << std::endl;
     }
-    std::cout << vec.size() << ' ';
+    std::cout << vec.back() << ' ';
     std::cout << vec.capacity() << std::endl;
 
     std::cout << '\n';
-    for (int i = 0; i <= 15; ++i)
-    {
-        std::cout << vec.size() << ' ';
-        std::cout << vec.capacity() << std::endl;
-        vec.pop_back();
-    }
-    std::cout << vec.size() << ' ';
-    std::cout << vec.capacity() << std::endl;
+
+    cantor::ArrayList<int> vec1 = vec;
+    for (auto &&i : vec1)
+        std::cout << i << '\n';
+
+    // std::cout << '\n';
+
+    // for (int i = 10; i <= 25; ++i)
+    // {
+    //     vec.push_back(i);
+    //     std::cout << vec.back() << ' ';
+    //     std::cout << vec.capacity() << std::endl;
+    // }
+    // std::cout << vec.back() << ' ';
+    // std::cout << vec.capacity() << std::endl;
 
     // for (int i = 0; i <= 15; ++i)
-    //     std::cout << vec.at(i) << '\n';
+    //     std::cout << vec.back() << '\n';
 
     // std::cout << vec.max_size() << std::endl;
     // std::cout << vec.capacity() << std::endl;

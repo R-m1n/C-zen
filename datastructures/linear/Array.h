@@ -18,6 +18,11 @@ namespace cantor
 
         constexpr ArrayIterator(pointer_type value_ptr) : value_ptr{value_ptr} {}
 
+        constexpr pointer_type base()
+        {
+            return value_ptr;
+        }
+
         constexpr iterator_reference operator++()
         {
             ++value_ptr;
@@ -175,9 +180,19 @@ namespace cantor
 
         using iterator = ArrayIterator<ArrayList<T>>;
 
-        constexpr ArrayList() : m_array{nullptr}, m_count{0}, m_capacity{0} {}
+        ArrayList() : m_array{nullptr}, m_count{0}, m_capacity{0} {}
 
-        constexpr ArrayList(size_t n) : m_array{new value_type[n]}, m_count{0}, m_capacity{n} {}
+        ArrayList(size_t n) : m_array{new value_type[n]}, m_count{0}, m_capacity{n} {}
+
+        ArrayList(const ArrayList<value_type> &other)
+        {
+            *this = other;
+        }
+
+        ArrayList(ArrayList<value_type> &&other)
+        {
+            *this = std::move(other);
+        }
 
         ~ArrayList()
         {
@@ -189,47 +204,67 @@ namespace cantor
             m_capacity = 0;
         }
 
-        reference_type at(size_t index)
+        reference_type at(size_t index) const
         {
             return (0 <= index < m_count) ? m_array[index] : throw std::out_of_range("index out of range!");
         }
 
-        reference_type operator[](size_t index)
+        reference_type operator[](size_t index) const noexcept
         {
             return m_array[index];
         }
 
-        reference_type front()
+        reference_type front() const noexcept
         {
             return *m_array;
         }
 
-        reference_type back()
+        reference_type back() const noexcept
         {
             return *(m_array + m_count - 1);
         }
 
-        pointer_type data()
+        pointer_type data() const noexcept
         {
             return m_array;
         }
 
-        bool is_empty()
+        bool is_empty() const noexcept
         {
             return m_count == 0;
         }
 
-        size_t size()
+        size_t size() const noexcept
         {
             return m_count;
         }
 
-        size_t capacity()
+        size_t capacity() const noexcept
         {
             return m_capacity;
         }
 
-        constexpr void reserve(size_t n)
+        iterator begin() const noexcept
+        {
+            return iterator(m_array);
+        }
+
+        iterator end() const noexcept
+        {
+            return iterator(m_array + m_count - 1);
+        }
+
+        // const iterator begin() const noexcept
+        // {
+        //     return iterator(m_array);
+        // }
+
+        // const iterator end() const noexcept
+        // {
+        //     return iterator(m_array + m_count - 1);
+        // }
+
+        void reserve(size_t n)
         {
             if (n > m_capacity)
             {
@@ -253,6 +288,63 @@ namespace cantor
             if (m_count <= (m_capacity / 2))
                 shrink();
         }
+
+        void clear()
+        {
+            m_count = 0;
+        }
+
+        void shrik_to_fit()
+        {
+            m_capacity = m_count;
+
+            allocate();
+        }
+
+        ArrayList<value_type> &operator=(const ArrayList<value_type> &other)
+        {
+            if (this != &other)
+            {
+                delete[] m_array;
+
+                m_capacity = other.capacity();
+
+                m_array = new value_type[m_capacity];
+
+                std::copy(other.begin().base(), other.end().base(), m_array);
+
+                m_count = other.size();
+            }
+
+            return *this;
+        }
+
+        ArrayList<value_type> &operator=(ArrayList<value_type> &&other)
+        {
+            if (this != &other)
+            {
+                delete[] m_array;
+
+                m_array = other.data();
+
+                m_count = other.size();
+
+                m_capacity = other.capacity();
+
+                other.m_array = nullptr;
+
+                other.m_count = 0;
+
+                other.m_capacity = 0;
+            }
+
+            return *this;
+        }
+
+    private:
+        pointer_type m_array = nullptr;
+        size_t m_count = 0;
+        size_t m_capacity = 0;
 
         void resize()
         {
@@ -278,15 +370,5 @@ namespace cantor
 
             m_array = temp;
         }
-
-        void clear()
-        {
-            m_count = 0;
-        }
-
-    private:
-        pointer_type m_array;
-        size_t m_count;
-        size_t m_capacity;
     };
 }
