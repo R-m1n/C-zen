@@ -49,17 +49,17 @@ int main()
     // std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     // std::vector<int> vec{8, 2, 10, 1, 9, 5, 4, 3, 6, 7};
 
-    cantor::StackArray<int> stack;
+    cantor::StackList<int> stack;
     stack.push(10);
     stack.push(20);
     stack.push(30);
     stack.push(40);
     stack.push(50);
 
-    cantor::StackArray<int> stack1 = std::move(stack);
+    cantor::StackList<int> stack1 = stack;
 
-    // while (!stack.is_empty())
-    //     std::cout << stack.pop() << '\n';
+    while (!stack.is_empty())
+        std::cout << stack.pop() << '\n';
 
     while (!stack1.is_empty())
         std::cout << stack1.pop() << '\n';

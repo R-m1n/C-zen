@@ -173,6 +173,10 @@ namespace cantor
     {
     public:
         using value_type = T;
+        using reference_type = T &;
+        using temporary_type = T &&;
+        using pointer_type = T *;
+
         using iterator = ListIterator<LinkedList<T>>;
         using reverse_iterator = ReverseListIterator<LinkedList<T>>;
 
@@ -202,6 +206,16 @@ namespace cantor
         void push_back(value_type value);
 
         void push_front(value_type value);
+
+        const reference_type get_back() const
+        {
+            return back->value;
+        }
+
+        const reference_type get_front() const
+        {
+            return front->value;
+        }
 
         const Error insert(value_type value, size_t index);
 
@@ -245,7 +259,7 @@ namespace cantor
             return count == 0;
         }
 
-        value_type &operator[](size_t index) const
+        reference_type operator[](size_t index) const
         {
             return get(index)->value;
         }

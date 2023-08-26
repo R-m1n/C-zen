@@ -4,6 +4,7 @@
 #include <utility>
 #include <optional>
 #include "Array.h"
+#include "LinkedList.h"
 #include "../Error.h"
 
 namespace cantor
@@ -91,7 +92,7 @@ namespace cantor
 
         StackArray() {}
 
-        StackArray(size_t n) :
+        StackArray(size_t n)
         {
             stack.reserve(n);
         }
@@ -158,5 +159,80 @@ namespace cantor
 
     private:
         cantor::ArrayList<value_type> stack;
+    };
+
+    template <typename T>
+    class StackList
+    {
+    public:
+        using value_type = T;
+        using reference_type = T &;
+        using temporary_type = T &&;
+        using pointer_type = T *;
+
+        StackList() {}
+
+        StackList(const StackList<value_type> &other)
+        {
+            *this = other;
+        }
+
+        StackList(StackList<value_type> &&other)
+        {
+            *this = std::move(other);
+        }
+
+        void push(temporary_type value)
+        {
+            push(value);
+        }
+
+        void push(const reference_type value)
+        {
+            stack.push_back(value);
+        }
+
+        value_type pop()
+        {
+            value_type temp = top();
+
+            stack.remove_back();
+
+            return temp;
+        }
+
+        const reference_type top() const
+        {
+            return stack.get_back();
+        }
+
+        size_t size() const
+        {
+            return stack.size();
+        }
+
+        bool is_empty() const
+        {
+            return stack.is_empty();
+        }
+
+        StackList<value_type> &operator=(const StackList<value_type> &other)
+        {
+            if (this != &other)
+                stack = other.stack;
+
+            return *this;
+        }
+
+        StackList<value_type> &operator=(StackList<value_type> &&other)
+        {
+            if (this != &other)
+                stack = std::move(other.stack);
+
+            return *this;
+        }
+
+    private:
+        cantor::LinkedList<value_type> stack;
     };
 }
