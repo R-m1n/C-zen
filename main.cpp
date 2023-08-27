@@ -10,6 +10,68 @@
 #include "datastructures/linear/Array.h"
 #include "utility/Timer.h"
 
+enum class Symbol : char
+{
+    Plus = '+',
+    Minus = '-',
+    Multiply = '*',
+    Divide = '/',
+};
+
+bool operator==(char ch, Symbol sym)
+{
+    return ch == static_cast<char>(sym);
+}
+
+void postfix_eval(const std::string &input)
+{
+    cantor::StackList<int> operands;
+    cantor::StackList<int> reverse_operands;
+
+    int result = 0;
+
+    for (char c : input)
+    {
+        if ('0' <= c && c <= '9')
+        {
+            reverse_operands.push(static_cast<int>(c) - '0');
+
+            continue;
+        }
+
+        bool is_symbol = c == Symbol::Plus || c == Symbol::Minus || c == Symbol::Multiply || c == Symbol::Divide;
+
+        if (is_symbol)
+        {
+            while (!reverse_operands.is_empty())
+                operands.push(reverse_operands.pop());
+
+            result += operands.pop();
+
+            while (!operands.is_empty())
+            {
+                if (c == Symbol::Plus)
+                    result += operands.pop();
+
+                else if (c == Symbol::Minus)
+                    result -= operands.pop();
+
+                else if (c == Symbol::Multiply)
+                    result *= operands.pop();
+
+                else if (c == Symbol::Divide)
+                    result /= operands.pop();
+            }
+
+            reverse_operands.push(result);
+
+            result = 0;
+        }
+    }
+
+    std::cout << reverse_operands.pop();
+}
+
 int count = 0;
 
 template <size_t S>
@@ -69,7 +131,9 @@ int main()
     // for (double i = 0; i < 1000000000; ++i)
     //     counter += (8 / ((4 * i + 1) * (4 * i + 3)));
 
-    // std::cout << counter;
+    std::string s = "32+1-";
+
+    postfix_eval(s);
 
     return 0;
 }
