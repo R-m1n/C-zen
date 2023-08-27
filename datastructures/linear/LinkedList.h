@@ -203,9 +203,15 @@ namespace cantor
             clear();
         }
 
-        void push_back(value_type value);
+        void push_back(temporary_type value)
+        {
+            push_back(value);
+        }
 
-        void push_front(value_type value);
+        void push_front(temporary_type value)
+        {
+            push_front(value);
+        }
 
         const reference_type get_back() const
         {
@@ -216,6 +222,10 @@ namespace cantor
         {
             return front->value;
         }
+
+        void push_back(const reference_type value);
+
+        void push_front(const reference_type value);
 
         const Error insert(value_type value, size_t index);
 
@@ -310,7 +320,7 @@ namespace cantor
     };
 
     template <typename T>
-    void LinkedList<T>::push_back(value_type value)
+    void LinkedList<T>::push_back(const reference_type value)
     {
         if (is_empty())
         {
@@ -331,7 +341,7 @@ namespace cantor
     }
 
     template <typename T>
-    void LinkedList<T>::push_front(value_type value)
+    void LinkedList<T>::push_front(const reference_type value)
     {
         if (is_empty())
         {

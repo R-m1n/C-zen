@@ -2,9 +2,9 @@
 #include <string>
 #include <vector>
 #include <array>
-#include <limits>
 
 #include "algorithms/Sorting.h"
+#include "algorithms/StackEvens.h"
 #include "datastructures/linear/LinkedList.h"
 #include "datastructures/linear/Stack.h"
 #include "datastructures/linear/Array.h"
@@ -49,20 +49,27 @@ int main()
     // std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     // std::vector<int> vec{8, 2, 10, 1, 9, 5, 4, 3, 6, 7};
 
-    cantor::StackList<int> stack;
-    stack.push(10);
-    stack.push(20);
-    stack.push(30);
-    stack.push(40);
-    stack.push(50);
+    // cantor::StackList<int> stack;
+    // stack.push(10);
+    // stack.push(20);
+    // stack.push(30);
+    // stack.push(40);
+    // stack.push(50);
 
-    cantor::StackList<int> stack1 = stack;
+    // cantor::StackList<int> stack1 = stack;
 
-    while (!stack.is_empty())
-        std::cout << stack.pop() << '\n';
+    // while (!stack.is_empty())
+    //     std::cout << stack.pop() << '\n';
 
-    while (!stack1.is_empty())
-        std::cout << stack1.pop() << '\n';
+    // while (!stack1.is_empty())
+    //     std::cout << stack1.pop() << '\n';
+
+    // double counter = 0;
+
+    // for (double i = 0; i < 1000000000; ++i)
+    //     counter += (8 / ((4 * i + 1) * (4 * i + 3)));
+
+    // std::cout << counter;
 
     return 0;
 }
