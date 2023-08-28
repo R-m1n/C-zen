@@ -3,9 +3,9 @@
 #include <iostream>
 #include <utility>
 #include <optional>
+#include <stdexcept>
 #include "Array.h"
 #include "LinkedList.h"
-#include "../Error.h"
 
 namespace cantor
 {
@@ -18,13 +18,13 @@ namespace cantor
         using temporary_type = T &&;
         using pointer_type = T *;
 
-        constexpr const Error push(const reference_type value) noexcept;
+        constexpr void push(const reference_type value);
 
-        constexpr const Error push(temporary_type value) noexcept;
+        constexpr void push(temporary_type value);
 
-        constexpr std::pair<std::optional<value_type>, const Error> pop() noexcept;
+        constexpr value_type pop() noexcept;
 
-        constexpr std::pair<std::optional<value_type>, const Error> top() noexcept;
+        constexpr value_type top() const noexcept;
 
         constexpr size_t size() const noexcept
         {
@@ -47,38 +47,30 @@ namespace cantor
     };
 
     template <typename T, size_t S>
-    constexpr const Error Stack<T, S>::push(const reference_type value) noexcept
+    constexpr void Stack<T, S>::push(const reference_type value)
     {
         if (is_full())
-            return Error::StackOverFlow;
+            throw std::length_error("stack is full!");
 
         stack[top_ptr++] = value;
-
-        return Error::None;
     }
 
     template <typename T, size_t S>
-    constexpr const Error Stack<T, S>::push(temporary_type value) noexcept
+    constexpr void Stack<T, S>::push(temporary_type value)
     {
-        return push(value);
+        push(value);
     }
 
     template <typename T, size_t S>
-    constexpr std::pair<std::optional<T>, const Error> Stack<T, S>::pop() noexcept
+    constexpr T Stack<T, S>::pop() noexcept
     {
-        if (is_empty())
-            return std::make_pair(std::make_optional<T>(), Error::EmptyStack);
-
-        return std::make_pair(stack[--top_ptr], Error::None);
+        return stack[--top_ptr];
     }
 
     template <typename T, size_t S>
-    constexpr std::pair<std::optional<T>, const Error> Stack<T, S>::top() noexcept
+    constexpr T Stack<T, S>::top() const noexcept
     {
-        if (is_empty())
-            return std::make_pair(std::make_optional<T>(), Error::EmptyStack);
-
-        return std::make_pair(stack[top_ptr - 1], Error::None);
+        return stack[top_ptr - 1];
     }
 
     template <typename T>
