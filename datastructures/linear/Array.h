@@ -282,6 +282,7 @@ namespace cantor
 
     private:
         pointer_type m_array = nullptr;
+
         size_t m_count = 0;
         size_t m_capacity = 0;
 

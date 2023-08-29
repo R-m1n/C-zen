@@ -2,12 +2,15 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <queue>
+#include <limits>
 
-#include "algorithms/Sorting.h"
-#include "algorithms/StackEvens.h"
-#include "datastructures/linear/LinkedList.h"
-#include "datastructures/linear/Stack.h"
-#include "datastructures/linear/Array.h"
+// #include "algorithms/Sorting.h"
+// #include "algorithms/StackEvens.h"
+// #include "datastructures/linear/LinkedList.h"
+// #include "datastructures/linear/Stack.h"
+// #include "datastructures/linear/Array.h"
+#include "datastructures/linear/Queue.h"
 #include "utility/Timer.h"
 
 int count = 0;
@@ -41,7 +44,8 @@ int main()
 {
     // std::vector<int> vec{10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
     // std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    // std::vector<int> vec{8, 2, 10, 1, 9, 5, 4, 3, 6, 7};
+    std::vector<int> vec{8, 2, 10, 1, 9, 5, 4, 3, 6, 7};
+    // std::array<int, 10> arr{8, 2, 10, 1, 9, 5, 4, 3, 6, 7};
 
     // cantor::StackList<int> stack;
     // stack.push(10);
@@ -63,5 +67,22 @@ int main()
     // for (double i = 0; i < 1000000000; ++i)
     //     counter += (8 / ((4 * i + 1) * (4 * i + 3)));
 
-        return 0;
+    // std::queue<int> q;
+    cantor::Deque<int> q;
+
+    q.push(10);
+    q.push(20);
+    q.push(30);
+    q.push(40);
+    q.push(50);
+    q.push(60);
+    q.push(70);
+
+    for (int i = 0; i < 5; ++i)
+    {
+        std::cout << q.pop() << std::endl;
+    }
+    std::cout << q.size() << std::endl;
+
+    return 0;
 }
